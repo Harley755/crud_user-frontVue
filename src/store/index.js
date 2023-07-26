@@ -1,59 +1,28 @@
-import axios from "axios";
 import { createStore } from "vuex";
+import axios from "axios";
 
 const store = createStore({
     state: {
-        count: 0,
-        colorCode: 'blue'
+        users: {},
     },
 
     mutations: {
-        increaseCount (state, randomNumber) {
-            console.log('randomNumber: ', randomNumber);
-            state.count += randomNumber;
-        },
-        decreaseCount (state, randomNumber) {
-            console.log('randomNumber: ', randomNumber);
-            state.count -= randomNumber;
-        },
-        setColorCode(state, color) {
-            state.colorCode = color; 
+        getAllUsers(state, data) {
+            state.users = data;
+            console.log('state.users: ',  state.users);
         }
     },
-    
+
     actions: {
-        decreaseCount ({ commit }) {
-            console.log('Increase from action');
-            axios.get('https://www.random.org/integers/?num=1&min=1&max=6&col=1&base=10&format=plain&rnd=new')
+        getAllUsers({ commit }) {
+            axios.get('http://127.0.0.1:8000/api/users/')
                 .then(response => {
-                    console.log('response : ', response.data);
-                    commit('decreaseCount', response.data)
+                    console.log('Users from action : ',response.data);
+                    commit('getAllUsers', response.data);
                 })
-                .catch((err) => console.log(err));
-        },
-        increaseCount ({ commit }) {
-            console.log('Increase from action');
-            axios.get('https://www.random.org/integers/?num=1&min=1&max=6&col=1&base=10&format=plain&rnd=new')
-                .then(response => {
-                    console.log('response : ', response.data);
-                    commit('increaseCount', response.data)
-                })
-                .catch((err) => console.log(err));
-        },
-        setColorCode({ commit }, newValue) {
-            commit('setColorCode', newValue)
+                .catch((error) => console.error(error))
         }
     },
-
-    getters: {
-        getCount(state) {
-            return state.count * state.count;
-        }
-    },
-
-    modules: {
-
-    }
-})
+});
 
 export default store;
