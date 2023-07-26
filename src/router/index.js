@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Index from '../pages/Users/Index.vue';
 import Edit from '../pages/Users/Edit.vue';
 import Show from '../pages/Users/Show.vue';
 
@@ -10,14 +9,19 @@ const routes = [{
 },{
     path: '/users',
     name: 'users.index',
-    component: Index,
+    component: () => import("../pages/Users/Index.vue"),
 },{
     path: '/users/:id',
     name: 'users.show',       
     component: Show,
-},,{
+},{
     path: '/users/:id/edit',
     name: 'users.edit',       
+    component: Edit,
+},
+{
+    path: '/:pathMatch(.*)*',
+    name: 'notFound',       
     component: Edit,
 },];
 
