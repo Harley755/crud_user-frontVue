@@ -1,6 +1,8 @@
 import { createStore } from "vuex";
 import axios from "axios";
 
+
+
 const store = createStore({
     state: {
         users: {},
@@ -42,9 +44,11 @@ const store = createStore({
             console.log('data: ', data);
             axios.post('http://127.0.0.1:8000/api/users/', data)
                 .then(response => {
-                    console.log('create User from action : ',response.data);
+                    console.log('create User from action : ', response.data);
                 })
-                .catch((error) => console.error(error))
+                .catch((error) => {
+                    console.log(error);
+                })
         }
     },
 });
