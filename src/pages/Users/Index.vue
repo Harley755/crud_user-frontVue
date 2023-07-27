@@ -1,4 +1,12 @@
 <template>
+  <button
+    type="button"
+    class="btn btn-primary mb-3"
+    data-bs-toggle="modal"
+    data-bs-target="#userModal"
+  >
+    Ajouter
+  </button>
   <div class="container col-md-12 shadow rounded p-3">
     <div class="card">
       <div class="card-header"><h4>Liste des utilisateurs</h4></div>
@@ -26,104 +34,132 @@
                 <button class="btn btn-secondary">Editer</button>
                 <form>
                   <input type="hidden" name="_method" value="DELETE" />
-                  <input
-                    type="hidden"
-                    name="_token"
-                    value="{{ csrf_token() }}"
-                  />
+                  <input type="hidden" name="_token" />
                   <button type="submit" class="btn btn-danger">
                     Supprimer
                   </button>
                 </form>
               </td>
             </tr>
-            <!-- Modal -->
-            <!-- <div class="modal fade" id="editModal_{{$variante->id}}" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h1 class="modal-title fs-5" id="productModalLabel">Editer la variante ({{$variante->name}})</h1>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form class="row" method="POST" action="{{ route('variantes.update', [$variante->id]) }}" enctype="multipart/form-data">
-                                            @method('PUT')
-                                            @csrf
-                                            <div class="form-group col-md-12">
-                                                {{-- PRODUIT --}}
-                                                <div class="row mb-2">
-                                                    <div>
-                                                        <label for="prix" class="col-md-3 col-form-label text-md-start">{{ __('Produit') }}</label>
-                                                    </div>
-
-                                                    <div class="col">
-                                                        <select required class="form-control select2  @error('prix') is-invalid @enderror" name="product_id" id="product_id">
-                                                            <option value="">Veuillez selectionner un produit</option>
-                                                            @foreach($products as $id => $entry)
-                                                            <option value="{{ $id }}" {{ old('product_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
-                                                            @endforeach
-                                                        </select>
-
-                                                        @error('prix')
-                                                        <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                        @enderror
-                                                    </div>
-                                                </div>
-
-                                                {{-- NAME --}}
-                                                <div class="row mb-2">
-                                                    <div>
-                                                        <label for="name" class="col-md-3 col-form-label text-md-start">{{ __('Name') }}</label>
-                                                    </div>
-
-                                                    <div class="col">
-                                                        <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name', $variante->name) }}" required autocomplete="name" autofocus>
-
-                                                        @error('name')
-                                                        <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                        @enderror
-                                                    </div>
-                                                </div>
-
-                                                {{-- PRIX --}}
-                                                <div class="row mb-2">
-                                                    <div>
-                                                        <label for="prix" class="col-md-3 col-form-label text-md-start">{{ __('Prix') }}</label>
-                                                    </div>
-
-                                                    <div class="col">
-                                                        <input id="prix" type="number" class="form-control @error('prix') is-invalid @enderror" name="prix" value="{{ old('prix', $variante->prix) }}" required autocomplete="prix" autofocus>
-
-                                                        @error('prix')
-                                                        <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                        @enderror
-                                                    </div>
-                                                </div>
-
-
-                                                <input type="submit" class="btn btn-primary mt-3" value="Enregistrer">
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> -->
           </tbody>
         </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL -->
+  <div
+    class="modal fade"
+    id="userModal"
+    tabindex="-1"
+    aria-labelledby="userModallLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="userModallLabel">
+            Créer un utilisateur
+          </h1>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form class="row" @submit.prevent="createUser">
+            <div class="form-group col-md-12">
+              <div class="row mb-2">
+                <div>
+                  <label
+                    for="name"
+                    class="col-md-3 col-form-label text-md-start"
+                    >Nom</label
+                  >
+                </div>
+
+                <div class="col">
+                  <input
+                    id="name"
+                    type="text"
+                    class="form-control"
+                    name="name"
+                    required
+                    autocomplete="name"
+                    autofocus
+                    v-model="userData.name"
+                  />
+                </div>
+              </div>
+
+              <div class="row mb-2">
+                <div>
+                  <label
+                    for="email"
+                    class="col-md-3 col-form-label text-md-start"
+                    >Email</label
+                  >
+                </div>
+
+                <div class="col">
+                  <input
+                    id="email"
+                    type="email"
+                    class="form-control"
+                    name="email"
+                    required
+                    autocomplete="email"
+                    v-model="userData.email"
+                  />
+                </div>
+              </div>
+
+              <div class="row mb-2">
+                <div>
+                  <label
+                    for="password"
+                    class="col-md-3 col-form-label text-md-start"
+                    >Mot de passe</label
+                  >
+                </div>
+
+                <div class="col">
+                  <input
+                    id="password"
+                    type="password"
+                    class="form-control"
+                    name="password"
+                    required
+                    autocomplete="password"
+                    v-model="userData.password"
+                  />
+                </div>
+              </div>
+
+              <input
+                type="submit"
+                class="btn btn-primary mt-3"
+                value="Enregistrer"
+              />
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed, onMounted } from "vue";
+import { computed, onMounted, ref } from "vue";
 import store from "../../store";
+
+const userData = ref({
+  name: "",
+  email: "",
+  password: "",
+});
 
 onMounted(() => {
   store.dispatch("getAllUsers");
@@ -132,6 +168,11 @@ onMounted(() => {
 let users = computed(() => {
   return store.state.users;
 });
+
+const createUser = () => {
+  //   console.log(userData.value);
+  store.dispatch("createUser", userData.value);
+};
 </script>
 
 <style>
